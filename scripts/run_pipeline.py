@@ -3,13 +3,12 @@
 
 import argparse
 import sys
-from datetime import datetime
 
 
 def main() -> int:
     """Main entry point for pipeline runner."""
     parser = argparse.ArgumentParser(description="Run dataspine pipeline")
-    
+
     parser.add_argument(
         "--mode",
         choices=["live", "backfill"],
@@ -36,24 +35,24 @@ def main() -> int:
         type=str,
         help="End date for backfill (YYYY-MM-DD)"
     )
-    
+
     args = parser.parse_args()
-    
+
     # Print what would run
-    print(f"Pipeline Configuration:")
+    print("Pipeline Configuration:")
     print(f"  Mode: {args.mode}")
     print(f"  Client: {args.client or 'all'}")
     print(f"  Dry Run: {args.dry_run}")
-    
+
     if args.mode == "backfill":
         print(f"  Start Date: {args.start or 'not specified'}")
         print(f"  End Date: {args.end or 'not specified'}")
-    
+
     if args.dry_run:
         print("\n[DRY RUN] No actual operations performed.")
     else:
         print("\n[INFO] Pipeline execution would start here.")
-    
+
     return 0
 
 

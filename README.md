@@ -90,8 +90,18 @@ dataspine/
 ├── scripts/                # Utility scripts
 ├── tests/                  # Test suite
 ├── infra/                  # Infrastructure (Docker)
-└── config/                 # Configuration files
+├── config/                 # Configuration files
+└── docs/                   # Data contracts & documentation
 ```
+
+## Documentation
+
+Comprehensive data contract documentation is available in the [`docs/`](docs/) directory:
+
+- **[Source Registry](docs/source_registry.md)** - External data sources (APIs, feeds)
+- **[Canonical Schemas](docs/canonical_schemas.md)** - Normalized data schemas
+- **[Data Contracts](docs/contracts.md)** - Validation rules
+- **[System Invariants](docs/invariants.md)** - System-wide guarantees
 
 ## Configuration
 
