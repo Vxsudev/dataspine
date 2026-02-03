@@ -1,0 +1,51 @@
+version: '3.8'
+
+networks:
+  dataspine:
+    driver: bridge
+
+services:
+  dataspine-db:
+    image: postgres:15-alpine
+    container_name: dataspine-db
+    environment:
+      POSTGRES_DB: ${DB_NAME:-dataspine}
+      POSTGRES_USER: ${DB_USER:-dataspine_user}
+      POSTGRES_PASSWORD: ${DB_PASS:-changeme}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - dataspine-db-data:/var/lib/postgresql/data
+    networks:
+      - dataspine
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-dataspine_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  dataspine-app:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+    container_name: dataspine-app
+    depends_on:
+      dataspine-db:
+        condition: service_healthy
+    environment:
+      DB_HOST: dataspine-db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-dataspine}
+      DB_USER: ${DB_USER:-dataspine_user}
+      DB_PASS: ${DB_PASS:-changeme}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      APP_ENV: ${APP_ENV:-development}
+    volumes:
+      - ../src:/app/src
+      - ../scripts:/app/scripts
+    networks:
+      - dataspine
+    command: ["python", "/app/scripts/run_pipeline.py", "--mode", "live", "--dry-run"]
+
+volumes:
+  dataspine-db-data:
